@@ -85,6 +85,7 @@ the courses.
 
 - Handle if a file is downloadable or not
 - Download multiple files in the same time (async+await, threads poll?)
+    - Specify how many and set a sensible default
 - Download files from Google Drive (see [`gdown`][gdown])
 - Make url / links with common external urls pages (Wikipedia, YouTube, etc)
 - Better logging (see [how to `logging`][hotto_logging])
@@ -93,6 +94,10 @@ the courses.
 - Simple user interface (separated from the core code)
 - Guide of how to install `python3` (Windows Store!)
 - Guide on how to add the program to PATH, so it could be used everywhere
+- Specify the format of file and courses names
+- Specify where to download the files
+- Specify which courses to download or exclude
+- Specify which files (format such as .pdf) to download or exclude
 
 
 <!-- links here! -->

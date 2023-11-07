@@ -55,13 +55,15 @@ class CanvasAPI:
 
         # In this case the response is a json list
         response_data = response.json()
-        while new_page:
-            pagination_response = self._session.get(new_page)
+        last_page = None
+        while new_page and new_page != last_page:
+            pagination_response = self._session.get(new_page["url"])
             response_data.extend(pagination_response.json())
             new_page = response.links.get("next", None)
+            last_page = new_page
         return response_data
 
-    def _gql(self, query: str, variables: dict = None) -> dict:
+    def _gql(self, query: str, variables: dict = {}) -> dict:
         "Makes a POST request to the GraphQL endpoint"
         # GraphQL pagination is complex, it should be handeled in each GQL method
         url = urlunsplit((REQUEST_SCHEME, self._location, GQL_ENDPOINT, "", ""))
@@ -87,7 +89,7 @@ class CanvasAPI:
         "Favorite courses (courses displayed in the dashboard)"
         return self._rest("/users/self/favorites/courses")
 
-    def _gql_module(self, course_id: int, after: str = None) -> tuple[dict, list]:
+    def _gql_module(self, course_id: int, after: str = "") -> tuple[dict, list]:
         variables = {"course_id": course_id, "after": after}
         response = self._gql(GQL_MODULES_AND_ITEMS, variables)
         response_data = response["course"]["modulesConnection"]

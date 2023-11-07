@@ -70,7 +70,9 @@ class CanvasStreamProvider:
         "Dowloads a `file` and saves it to `path`"
         dowload_to_file(self.dowload(file.download_url), path)
 
-    def save_external_url_to_system(self, external_url: ExternalURL, path: Path) -> None:
+    def save_external_url_to_system(
+        self, external_url: ExternalURL, path: Path
+    ) -> None:
         "Tries each function of `external_url_download_recipes` until one returns `true`"
         for recipe in self.external_url_download_recipes:
             if recipe(external_url, path):
@@ -101,6 +103,4 @@ class CanvasStreamProvider:
         `external_url.title` as it's file name.
         The path will not have a suffix.
         """
-        return Path(
-            slugify(external_url.module_name), slugify(external_url.title)
-        )
+        return Path(slugify(external_url.module_name), slugify(external_url.title))

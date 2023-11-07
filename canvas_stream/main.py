@@ -31,7 +31,7 @@ class CanvasStream:
     "CanvasStream main class"
     __slots__ = ["database", "requester", "config", "__provider"]
 
-    def __init__(self, *, config: StrMapping = None) -> None:
+    def __init__(self, *, config: Mapping[str, Any] = {}) -> None:
         """
         Creates a CanvasStream instance.
 
@@ -94,7 +94,7 @@ class CanvasStream:
                 print(f"Updating references of {course.name}")
                 self._update_courses_references(course)
 
-        print("Dowloading new files...")
+        print("Downloading new files...")
         for file in File.find_not_saved():
             self._save_file(file)
 

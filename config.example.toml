@@ -1,2 +1,4 @@
 url = 'https://to.canvas.com'
 access_token = 'insert-random-chars-here'
+output_path = 'canvas' # relative or absolute
+excluded_formats = ["mp4"] # lower case extensions

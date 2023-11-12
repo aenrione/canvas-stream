@@ -15,7 +15,9 @@ and the API `access_token` (with is usually available at
 
 ```toml
 url = 'https://to.canvas.com'
-access_token = 'insert-random-chars-here'
+access_token = 'insert-random-chars-here' # API access token
+output_path = 'canvas' # optional, default is 'canvas, can be absolute or relative to the current directory
+excluded_formats = ["mp4"] # lower case extensions
 ```
 
 Then run the following commands:
@@ -83,21 +85,20 @@ the courses.
 
 ### Asome things to implement in the future
 
-- Handle if a file is downloadable or not
-- Download multiple files in the same time (async+await, threads poll?)
-    - Specify how many and set a sensible default
-- Download files from Google Drive (see [`gdown`][gdown])
-- Make url / links with common external urls pages (Wikipedia, YouTube, etc)
-- Better logging (see [how to `logging`][hotto_logging])
-- User configuration
-- Better correlation with DB File and filesystem file
-- Simple user interface (separated from the core code)
-- Guide of how to install `python3` (Windows Store!)
-- Guide on how to add the program to PATH, so it could be used everywhere
-- Specify the format of file and courses names
-- Specify where to download the files
-- Specify which courses to download or exclude
-- Specify which files (format such as .pdf) to download or exclude
+- [] Handle if a file is downloadable or not
+- [] Download multiple files in the same time (async+await, threads poll?)
+- [] Download files from Google Drive (see [`gdown`][gdown])
+- [] Make url / links with common external urls pages (Wikipedia, YouTube, etc)
+- [] Better logging (see [how to `logging`][hotto_logging])
+- [] User configuration
+- [] Better correlation with DB File and filesystem file
+- [] Simple user interface (separated from the core code)
+- [] Guide of how to install `python3` (Windows Store!)
+- [] Guide on how to add the program to PATH, so it could be used everywhere
+- [] Specify the format of file and courses names
+- [x] Specify where to download the files
+- [] Specify which courses to download or exclude
+- [x] Specify which files (format such as .pdf) to exclude
 
 
 <!-- links here! -->

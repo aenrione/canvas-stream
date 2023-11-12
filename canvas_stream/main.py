@@ -13,7 +13,7 @@ from requests import RequestException
 
 from . import save
 from .api import CanvasAPI
-from .helpers import naive_datetime, userfull_download_url_or_empty_str
+from .helpers import naive_datetime, userfull_download_url_or_empty_str, is_format_excluded
 from .db import DataBase, schema
 from .db.schema import Course, ExternalURL, File
 from .provider import CanvasStreamProvider
@@ -52,7 +52,8 @@ class CanvasStream:
             url=self.config["url"], access_token=self.config["access_token"]
         )
 
-        self.__provider = CanvasStreamProvider(self.config, self.requester.download)
+        self.__provider = CanvasStreamProvider(
+            self.config, self.requester.download)
 
     def set_provider(self, provider_class: type[CanvasStreamProvider]):
         "Sets a new proveider"
@@ -95,8 +96,10 @@ class CanvasStream:
                 self._update_courses_references(course)
 
         print("Downloading new files...")
+        formats = self.config.get("excluded_formats", [])
         for file in File.find_not_saved():
-            self._save_file(file)
+            if not is_format_excluded(file.name, formats):
+                self._save_file(file)
 
         for external_url in ExternalURL.find_not_saved():
             self._save_external_url(external_url)
@@ -138,7 +141,8 @@ class CanvasStream:
             # A now request is made here to try again, but now
             # only asking for the information of the file
             file_data = self.requester.file(file.id)
-            file.download_url = userfull_download_url_or_empty_str(file_data["url"])
+            file.download_url = userfull_download_url_or_empty_str(
+                file_data["url"])
             if not file.download_url:
                 return
 
@@ -150,10 +154,13 @@ class CanvasStream:
         file.upsert()
 
     def _save_external_url(self, external_url: ExternalURL):
-        relative_path = self.__provider.external_url_relative_path(external_url)
-        absolute_path = self._complete_path(external_url.course_id, relative_path)
+        relative_path = self.__provider.external_url_relative_path(
+            external_url)
+        absolute_path = self._complete_path(
+            external_url.course_id, relative_path)
 
-        self.__provider.save_external_url_to_system(external_url, absolute_path)
+        self.__provider.save_external_url_to_system(
+            external_url, absolute_path)
         external_url.saved_at = datetime.datetime.now().isoformat()
         external_url.upsert()
 

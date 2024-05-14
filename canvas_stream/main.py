@@ -19,7 +19,7 @@ from .db.schema import Course, ExternalURL, File
 from .provider import CanvasStreamProvider
 
 
-def main(pause_time=60, iterate=True):
+def main(pause_time=500, iterate=True):
     "Runs `CanvasStream().run()`"
     CanvasStream().run(pause_time, iterate)
 

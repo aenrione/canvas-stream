@@ -15,7 +15,7 @@ def naive_datetime(dt_str: str):
     return datetime.fromisoformat(dt_str.strip("Z")).replace(tzinfo=None).isoformat()
 
 
-def slugify(value: str, lower=True, capitalize=True) -> str:
+def slugify(value: str, lower=False, capitalize=False) -> str:
     "Makes a string a valid file path"
     # TODO: find a better way to do this (python-slugify?)
     # Normalize and encode to ASCII
@@ -24,11 +24,11 @@ def slugify(value: str, lower=True, capitalize=True) -> str:
 
     # Single regex to replace invalid characters (including spaces) with '-'
     # This regex covers: <, >, :, ", /, \, |, ?, *, and any whitespace character
-    value = re.sub(r'[<>:"/\\|?*\s]+', '-', value)
+    value = re.sub(r'[<>:"/\\|?*\s]+', '', value)
 
     # Remove leading/trailing hyphens or dots, and condense repeated hyphens
     value = re.sub(r'^[-.]+|[-.]+$', '', value)
-    value = re.sub(r'[-]+', '-', value)
+    value = re.sub(r'[-]+', '', value)
 
     # Other replacements
     value = value.lower() if lower else value

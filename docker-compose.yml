@@ -1,0 +1,20 @@
+services:
+  canvas-stream:
+    container_name: canvas-stream
+    build: .
+    environment:
+      - URL=${URL}
+      - ACCESS_TOKEN=${ACCESS_TOKEN}
+      - OUTPUT_PATH=${OUTPUT_PATH:-canvas}
+      - EXCLUDED_FORMATS=${EXCLUDED_FORMATS:-["mp4"]}
+
+      # Slug formating for file naming
+      - SLUG_PRESET=${SLUG_PRESET}
+      - SLUG_SEPARATOR=${SLUG_SEPARATOR:-_}
+      - SLUG_LOWER=${SLUG_LOWER:-true}
+      - SLUG_ASCII_ONLY=${SLUG_ASCII_ONLY:-false}
+      - SLUG_CAPITALIZE=${SLUG_CAPITALIZE:-false}
+    volumes:
+      - ./data:/app/${OUTPUT_PATH:-canvas}
+    restart: always
+

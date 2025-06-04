@@ -2,3 +2,10 @@ url = 'https://to.canvas.com'
 access_token = 'insert-random-chars-here'
 output_path = 'canvas' # relative or absolute
 excluded_formats = ["mp4"] # lower case extensions
+
+[slug]
+preset = '' # preset slug format: "snake_case", "kebab-case", "PascalCase"
+lower = false # convert to lower case
+separator = "-" # replace spaces with this character
+ascii_only = true # remove non-ascii characters
+capitalize = false # capitalize first letter of each word

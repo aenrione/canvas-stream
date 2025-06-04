@@ -6,7 +6,7 @@ import unicodedata
 import re
 from datetime import datetime
 from string import Template
-from urllib.parse import urlsplit, parse_qs
+from urllib.parse import urlsplit, parse_qs, unquote_plus
 import os
 
 
@@ -15,26 +15,45 @@ def naive_datetime(dt_str: str):
     return datetime.fromisoformat(dt_str.strip("Z")).replace(tzinfo=None).isoformat()
 
 
-def slugify(value: str, lower=False, capitalize=False) -> str:
-    "Makes a string a valid file path"
-    # TODO: find a better way to do this (python-slugify?)
-    # Normalize and encode to ASCII
-    value = unicodedata.normalize('NFKD', value).encode(
-        'ascii', 'ignore').decode('ascii')
+def slugify(
+    value: str,
+    *,
+    lower=False,
+    separator="_",
+    ascii_only=True,
+    capitalize=False,
+    preset=None
+) -> str:
+    """Make a string safe for filenames, with flexible formatting and presets."""
+    value = unquote_plus(value.strip())
 
-    # Single regex to replace invalid characters (including spaces) with '-'
-    # This regex covers: <, >, :, ", /, \, |, ?, *, and any whitespace character
-    value = re.sub(r'[<>:"/\\|?*\s]+', '', value)
+    if preset:
+        presets = {
+            "snake_case":      {"lower": True,  "separator": "_", "ascii_only": True,  "capitalize": False},
+            "kebab-case":      {"lower": True,  "separator": "-", "ascii_only": True,  "capitalize": False},
+            "PascalCase":      {"lower": False, "separator": "",  "ascii_only": True,  "capitalize": True},
+        }
+        if preset in presets:
+            preset_cfg = presets[preset]
+            lower = preset_cfg["lower"]
+            separator = preset_cfg["separator"]
+            ascii_only = preset_cfg["ascii_only"]
+            capitalize = preset_cfg["capitalize"]
 
-    # Remove leading/trailing hyphens or dots, and condense repeated hyphens
-    value = re.sub(r'^[-.]+|[-.]+$', '', value)
-    value = re.sub(r'[-]+', '', value)
+    if ascii_only:
+        value = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
+    else:
+        value = unicodedata.normalize("NFKC", value)
 
-    # Other replacements
-    value = value.lower() if lower else value
-    value = value.capitalize() if capitalize else value
+    value = re.sub(r'[<>:"/\\|?*\s]+', separator, value)
+    value = re.sub(f'{re.escape(separator)}+', separator, value).strip(separator)
+
+    if lower:
+        value = value.lower()
+    if capitalize:
+        value = value.capitalize()
+
     return value
-
 
 HTML_HYPERLINK_DOCUMENT_TEMPLATE = Template(
     """

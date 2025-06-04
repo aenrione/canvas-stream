@@ -3,6 +3,31 @@
 A [smart](#smart) and [small](#small) python module for downloading
 the current favorite courses files from Canvas-LMS.
 
+## Docker
+You can also run this program using Docker, just run the following command:
+
+```bash
+docker run -d \
+  --name canvas-stream \
+  -e URL="https://to.canvas.com" \
+  -e ACCESS_TOKEN="your_access_token_here" \
+  -e OUTPUT_PATH="canvas" \
+  -e EXCLUDED_FORMATS='["mp4", "mp3"]' \
+  -v $(pwd)/data:/app/canvas \
+  --restart=always \
+  canvas-stream-image
+
+```
+
+or using `docker-compose` by:
+- copying `.env.example` to `.env`
+- setting the environment variables in a `.env` file
+
+```bash
+docker-compose up -d
+```
+
+
 ## Setup
 
 ### Installation
@@ -18,6 +43,13 @@ url = 'https://to.canvas.com'
 access_token = 'insert-random-chars-here' # API access token
 output_path = 'canvas' # optional, default is 'canvas, can be absolute or relative to the current directory
 excluded_formats = ["mp4"] # lower case extensions
+
+[slug]
+preset = '' # preset slug format: "snake_case", "kebab-case", "PascalCase"
+lower = false # convert to lower case
+separator = "-" # replace spaces with this character
+ascii_only = true # remove non-ascii characters
+capitalize = false # capitalize first letter of each word
 ```
 
 Then run the following commands:
@@ -33,10 +65,19 @@ python3 -m venv .venv
 python -m pip install -r requirements.txt
 ```
 
+or using [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
+
+```bash
+uv pip install -r requirements.txt
+
+```
+
 Then, run the program with:
 
 ```
 python -m canvas_stream
+# or if you installed uv
+uv run -m canvas_stream
 ```
 
 ### Development

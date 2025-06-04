@@ -62,6 +62,7 @@ class CanvasStreamProvider:
     @final  # (don't override)
     def __init__(self, config: Mapping[str, Any], dowload: DowloadFunction) -> None:
         self.config = config
+        self.slug_opts = config.get("slug", {})
         # Dowloading a file from canvas might requiere credentials. This could
         # be deleted in the future if files could be downloaded only with the URL.
         self.dowload = dowload
@@ -80,7 +81,7 @@ class CanvasStreamProvider:
 
     def course_relative_path(self, course: Course) -> Path:
         "Directory path of the course relative to the output directory"
-        return Path(slugify(course.name))
+        return Path(slugify(course.name, **self.slug_opts))
 
     def file_relative_path(self, file: File) -> Path:
         """
@@ -90,11 +91,11 @@ class CanvasStreamProvider:
         """
         dir_path = Path()
         if file.module_name:
-            dir_path = Path(slugify(file.module_name))
+            dir_path = Path(slugify(file.module_name, **self.slug_opts))
         elif file.folder_id:
             folder = next(Folder.find(id=file.folder_id))
             dir_path = Path(*map(slugify, Path(folder.full_name).parts))
-        return dir_path.joinpath(slugify(file.name))
+        return dir_path.joinpath(slugify(file.name, **self.slug_opts))
 
     def external_url_relative_path(self, external_url: ExternalURL) -> Path:
         """
@@ -103,4 +104,5 @@ class CanvasStreamProvider:
         `external_url.title` as it's file name.
         The path will not have a suffix.
         """
-        return Path(slugify(external_url.module_name), slugify(external_url.title))
+        return Path(slugify(external_url.module_name, **self.slug_opts),
+                    slugify(external_url.title, **self.slug_opts))
